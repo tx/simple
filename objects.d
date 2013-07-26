@@ -68,6 +68,34 @@ public class Add : Obj {
   }
 }
 
+public class Subtract : Obj {
+  const Obj left;
+  const Obj right;
+
+  this(const Obj left, const Obj right){
+    this.left = left;
+    this.right = right;
+  }
+
+  public const pure Obj reduce(){
+    if(left.isReducible()){
+      return new Subtract(left.reduce(), right);
+    } else if(right.isReducible()){
+      return new Subtract(left, right.reduce);
+    } else {
+      return new Number((cast(Number) left).value - (cast(Number) right).value);
+    }
+  }
+
+  public string toString(){
+    return format("%s + %s", left, right);
+  }
+
+  public const pure bool isReducible(){
+    return true;
+  }
+}
+
 public class Multiply : Obj {
   const Obj left;
   const Obj right;
@@ -96,3 +124,30 @@ public class Multiply : Obj {
   }
 }
 
+public class Divide : Obj {
+  const Obj left;
+  const Obj right;
+
+  this(const Obj left, const Obj right){
+    this.left = left;
+    this.right = right;
+  }
+
+  public const pure Obj reduce(){
+    if(left.isReducible()){
+      return new Divide(left.reduce(), right);
+    } else if(right.isReducible()){
+      return new Divide(left, right.reduce);
+    } else {
+      return new Number((cast(Number) left).value / (cast(Number) right).value);
+    }
+  }
+
+  public string toString(){
+    return format("%s + %s", left, right);
+  }
+
+  public const pure bool isReducible(){
+    return true;
+  }
+}
