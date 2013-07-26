@@ -3,7 +3,7 @@ import std.ascii;
 import std.string;
 
 public class Obj {
-  public string toString(){
+  override public string toString(){
     return "#{Obj}";
   }
 
@@ -25,14 +25,15 @@ public class Number : Obj {
     this.value = value;
   }
 
-  public const pure Number reduce(){
+  override public const pure Number reduce(){
     return new Number(value);
   }
 
-  public string toString(){
+  override public string toString(){
     return format("%d", this.value);
   }
-  public const pure bool isReducible(){
+
+  override public const pure bool isReducible(){
     return false;
   }
 
@@ -49,7 +50,7 @@ public class Add : Obj {
     this.right = right;
   }
 
-  public const pure Obj reduce(){
+  override public const pure Obj reduce(){
     if(left.isReducible()){
       return new Add(left.reduce(), right);
     } else if(right.isReducible()){
@@ -59,11 +60,11 @@ public class Add : Obj {
     }
   }
 
-  public string toString(){
+  override public string toString(){
     return format("%s + %s", left, right);
   }
 
-  public const pure bool isReducible(){
+  override public const pure bool isReducible(){
     return true;
   }
 }
@@ -77,7 +78,7 @@ public class Subtract : Obj {
     this.right = right;
   }
 
-  public const pure Obj reduce(){
+  override public const pure Obj reduce(){
     if(left.isReducible()){
       return new Subtract(left.reduce(), right);
     } else if(right.isReducible()){
@@ -87,11 +88,11 @@ public class Subtract : Obj {
     }
   }
 
-  public string toString(){
+  override public string toString(){
     return format("%s + %s", left, right);
   }
 
-  public const pure bool isReducible(){
+  override public const pure bool isReducible(){
     return true;
   }
 }
@@ -105,7 +106,7 @@ public class Multiply : Obj {
     this.right = right;
   }
 
- public const pure Obj reduce(){
+ override public const pure Obj reduce(){
     if(left.isReducible()){
       return new Multiply(left.reduce(), right);
     } else if(right.isReducible()){
@@ -115,11 +116,11 @@ public class Multiply : Obj {
     }
   }
 
-  public string toString(){
+  override public string toString(){
     return format("%s * %s", left, right);
   }
 
-  public const pure bool isReducible(){
+  override public const pure bool isReducible(){
     return true;
   }
 }
@@ -133,7 +134,7 @@ public class Divide : Obj {
     this.right = right;
   }
 
-  public const pure Obj reduce(){
+  override public const pure Obj reduce(){
     if(left.isReducible()){
       return new Divide(left.reduce(), right);
     } else if(right.isReducible()){
@@ -143,11 +144,11 @@ public class Divide : Obj {
     }
   }
 
-  public string toString(){
+  override public string toString(){
     return format("%s + %s", left, right);
   }
 
-  public const pure bool isReducible(){
+  override public const pure bool isReducible(){
     return true;
   }
 }

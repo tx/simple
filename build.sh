@@ -1,2 +1,2 @@
 #!/bin/sh
-dmd *.d -ofsimple && rm *.o
+dmd -w -O -ofsimple *.d && rm *.o
