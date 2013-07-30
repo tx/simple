@@ -32,9 +32,16 @@ int main(char[][] args){
 		     );
   Machine vm = new Machine(expr1);
   vm.run();
+
   auto expr2 = new LessThan(new Number(5), new Add(new Number(2), new Number(2)));
   Machine vm2 = new Machine(expr2);
   vm2.run();
   
+  auto expr3 = new Equals(
+			  new Multiply(new Number(3), new Number(5)),
+			  new Multiply(new Number(5), new Number(3)));
+  Machine vm3 = new Machine(expr3);
+  vm3.run();
+
   return 0;
 }
