@@ -17,45 +17,41 @@ public class Obj {
 }
 
 /********************* Values *********************/
+class Atom(T) : Obj {
+  T value;
+  this(){}
+  this(T t){
+    this.value = t;
+  }
 
-public class Number : Obj {
-  const long value;
+  override public const pure Atom reduce(){
+    return new Atom(value);
+  }
   
+  override public const string toString(){
+    return format("%s", this.value);
+  }
+  
+  override public const pure bool isReducible(){
+    return false;
+  }
+
+}
+
+public class Number : Atom!(long) {
   this(long value){
-    this.value = value;
+    super(value);
   }
-  
-  override public const pure Number reduce(){
-    return this;
-  }
-  
+
   override public const string toString(){
     return format("%d", this.value);
   }
   
-  override public const pure bool isReducible(){
-    return false;
-  }
-  
 }
 
-public class Boolean : Obj {
-  const bool value;
-
+public class Boolean : Atom!(bool) {
   this(bool value){
-    this.value = value;
-  }
-  
-  override public const pure bool isReducible(){
-    return false;
-  }
-  
-  override public const pure Boolean reduce(){
-    return this;
-  }
-  
-  override public const string toString(){
-    return format("%s", value);
+    super(value);
   }
 }
 
