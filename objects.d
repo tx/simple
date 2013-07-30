@@ -76,7 +76,7 @@ public class Add : Obj {
     if(left.isReducible()){
       return new Add(left.reduce(), right);
     } else if(right.isReducible()){
-      return new Add(left, right.reduce);
+      return new Add(left, right.reduce());
     } else {
       return new Number((cast(Number) left).value + (cast(Number) right).value);
     } 
@@ -104,7 +104,7 @@ public class Subtract : Obj {
     if(left.isReducible()){
       return new Subtract(left.reduce(), right);
     } else if(right.isReducible()){
-      return new Subtract(left, right.reduce);
+      return new Subtract(left, right.reduce());
     } else {
       return new Number((cast(Number) left).value - (cast(Number) right).value);
     } 
@@ -132,7 +132,7 @@ public class Multiply : Obj {
     if(left.isReducible()){
       return new Multiply(left.reduce(), right);
     } else if(right.isReducible()){
-      return new Multiply(left, right.reduce);
+      return new Multiply(left, right.reduce());
     } else {
       return new Number((cast(Number) left).value * (cast(Number) right).value);
     } 
@@ -160,7 +160,7 @@ public class Divide : Obj {
     if(left.isReducible()){
       return new Divide(left.reduce(), right);
     } else if(right.isReducible()){
-      return new Divide(left, right.reduce);
+      return new Divide(left, right.reduce());
     } else {
       return new Number((cast(Number) left).value / (cast(Number) right).value);
     } 
@@ -168,6 +168,38 @@ public class Divide : Obj {
   
   override public const string toString(){
     return format("%s / %s", left, right);
+  }
+  
+  override public const pure bool isReducible(){
+    return true;
+  }
+}
+
+public class Equals : Obj {
+  const Obj left;
+  const Obj right;
+  
+  this(const Obj left, const Obj right){
+    this.left = left;
+    this.right = right;
+  }
+  
+  override public const pure Obj reduce(){
+    if(left.isReducible()){
+      return new Equals(left.reduce(), right);
+    } else if(right.isReducible()){
+      return new Equals(left, right.reduce());
+    } else if(cast(Number) left && cast(Number) right){
+      return new Boolean((cast(Number) left).value == (cast(Number) right).value);
+    } else if(cast(Boolean) left && cast(Boolean) right){
+      return new Boolean((cast(Boolean) left).value == (cast(Boolean) right).value);
+    } else {
+      return new Boolean(false);
+    }
+  }
+  
+  override public const string toString(){
+    return format("%s = %s", left, right);
   }
   
   override public const pure bool isReducible(){
@@ -188,7 +220,7 @@ public class LessThan : Obj {
     if(left.isReducible()){
       return new LessThan(left.reduce(), right);
     } else if(right.isReducible()){
-      return new LessThan(left, right.reduce);
+      return new LessThan(left, right.reduce());
     } else {
       return new Boolean((cast(Number) left).value < (cast(Number) right).value);
     } 
@@ -216,7 +248,7 @@ public class GreaterThan : Obj {
     if(left.isReducible()){
       return new GreaterThan(left.reduce(), right);
     } else if(right.isReducible()){
-      return new GreaterThan(left, right.reduce);
+      return new GreaterThan(left, right.reduce());
     } else {
       return new Boolean((cast(Number) left).value > (cast(Number) right).value);
     } 
@@ -230,3 +262,84 @@ public class GreaterThan : Obj {
     return true;
   }
 }
+
+public class And : Obj {
+  const Obj left;
+  const Obj right;
+  
+  this(const Obj left, const Obj right){
+    this.left = left;
+    this.right = right;
+  }
+  
+  override public const pure Obj reduce(){
+    if(left.isReducible()){
+      return new And(left.reduce(), right);
+    } else if(right.isReducible()){
+      return new And(left, right.reduce());
+    } else {
+      return new Boolean((cast(Boolean) left).value && (cast(Boolean) right).value);
+    } 
+  }
+  
+  override public const string toString(){
+    return format("%s && %s", left, right);
+  }
+  
+  override public const pure bool isReducible(){
+    return true;
+  }
+}
+
+public class Or : Obj {
+  const Obj left;
+  const Obj right;
+  
+  this(const Obj left, const Obj right){
+    this.left = left;
+    this.right = right;
+  }
+  
+  override public const pure Obj reduce(){
+    if(left.isReducible()){
+      return new Or(left.reduce(), right);
+    } else if(right.isReducible()){
+      return new Or(left, right.reduce());
+    } else {
+      return new Boolean((cast(Boolean) left).value || (cast(Boolean) right).value);
+    } 
+  }
+  
+  override public const string toString(){
+    return format("%s || %s", left, right);
+  }
+  
+  override public const pure bool isReducible(){
+    return true;
+  }
+}
+
+public class Not : Obj {
+  const Obj cond;
+  
+  this(const Obj cond){
+    this.cond = cond;
+  }
+  
+  override public const pure Obj reduce(){
+    if(cond.isReducible()){
+      return new Not(cond.reduce());
+    } else {
+      return new Boolean(!(cast(Boolean) cond).value);
+    } 
+  }
+  
+  override public const string toString(){
+    return format("!%s", cond);
+  }
+  
+  override public const pure bool isReducible(){
+    return true;
+  }
+}
+
