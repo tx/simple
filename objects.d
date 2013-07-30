@@ -41,7 +41,7 @@ public class Number : Obj {
 
 public class Boolean : Obj {
   const bool value;
-  
+
   this(bool value){
     this.value = value;
   }
@@ -168,6 +168,62 @@ public class Divide : Obj {
   
   override public const string toString(){
     return format("%s / %s", left, right);
+  }
+  
+  override public const pure bool isReducible(){
+    return true;
+  }
+}
+
+public class LessThan : Obj {
+  const Obj left;
+  const Obj right;
+  
+  this(const Obj left, const Obj right){
+    this.left = left;
+    this.right = right;
+  }
+  
+  override public const pure Obj reduce(){
+    if(left.isReducible()){
+      return new LessThan(left.reduce(), right);
+    } else if(right.isReducible()){
+      return new LessThan(left, right.reduce);
+    } else {
+      return new Boolean((cast(Number) left).value < (cast(Number) right).value);
+    } 
+  }
+  
+  override public const string toString(){
+    return format("%s < %s", left, right);
+  }
+  
+  override public const pure bool isReducible(){
+    return true;
+  }
+}
+
+public class GreaterThan : Obj {
+  const Obj left;
+  const Obj right;
+  
+  this(const Obj left, const Obj right){
+    this.left = left;
+    this.right = right;
+  }
+  
+  override public const pure Obj reduce(){
+    if(left.isReducible()){
+      return new GreaterThan(left.reduce(), right);
+    } else if(right.isReducible()){
+      return new GreaterThan(left, right.reduce);
+    } else {
+      return new Boolean((cast(Number) left).value > (cast(Number) right).value);
+    } 
+  }
+  
+  override public const string toString(){
+    return format("%s > %s", left, right);
   }
   
   override public const pure bool isReducible(){
