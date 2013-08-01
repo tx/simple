@@ -18,8 +18,8 @@ public class Obj {
 
 /********************* Values *********************/
 class Atom(T) : Obj {
-  T value;
-  this(){}
+  const T value;
+
   this(T t){
     this.value = t;
   }
