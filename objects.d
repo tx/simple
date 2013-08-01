@@ -38,22 +38,8 @@ class Atom(T) : Obj {
 
 }
 
-public class Number : Atom!(long) {
-  this(long value){
-    super(value);
-  }
-
-  override public const string toString(){
-    return format("%d", this.value);
-  }
-  
-}
-
-public class Boolean : Atom!(bool) {
-  this(bool value){
-    super(value);
-  }
-}
+alias Atom!(long) Number;
+alias Atom!(bool) Boolean;
 
 /********************* Operations *********************/
 
