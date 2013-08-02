@@ -43,5 +43,9 @@ int main(char[][] args){
   Machine vm3 = new Machine(expr3);
   vm3.run();
 
+  auto expr4 = new Add(new Number(6), new Boolean(true));
+  Machine vm4 = new Machine(expr4);
+  vm4.run();
+
   return 0;
 }
