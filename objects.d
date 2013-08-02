@@ -16,6 +16,12 @@ public class Obj {
   }
 }
 
+class NaN : Obj {
+  override public const string toString(){
+    return "#{NaN}";
+  }
+}
+
 /********************* Values *********************/
 class Atom(T) : Obj {
   const T value;
@@ -35,11 +41,31 @@ class Atom(T) : Obj {
   override public const pure bool isReducible(){
     return false;
   }
-
 }
 
 alias Atom!(long) Number;
+
+pure bool isNumber(const Obj o){
+  return !!cast(Number) o;
+}
+pure Number toNumber(const Obj o){
+  return cast(Number) o;
+}
+
 alias Atom!(bool) Boolean;
+
+pure bool isBoolean(const Obj o){
+  return !!cast(Boolean) o;
+}
+pure Boolean toBoolean(const Obj o){
+  if(isNumber(o)){
+    return new Boolean(toNumber(o).value != 0);
+  } else if(isBoolean(o)){
+    return cast(Boolean) o;
+  } else {
+    return new Boolean(false);
+  }
+}
 
 /********************* Operations *********************/
 
@@ -59,9 +85,11 @@ public class Add : Obj {
       return new Add(left.reduce(), right);
     } else if(right.isReducible()){
       return new Add(left, right.reduce());
+    } else if(isNumber(left) && isNumber(right)){
+      return new Number(toNumber(left).value + toNumber(right).value);
     } else {
-      return new Number((cast(Number) left).value + (cast(Number) right).value);
-    } 
+      return new NaN();
+    }
   }
   
   override public const string toString(){
@@ -87,9 +115,11 @@ public class Subtract : Obj {
       return new Subtract(left.reduce(), right);
     } else if(right.isReducible()){
       return new Subtract(left, right.reduce());
+    } else if(isNumber(left) && isNumber(right)){
+      return new Number(toNumber(left).value - toNumber(right).value);
     } else {
-      return new Number((cast(Number) left).value - (cast(Number) right).value);
-    } 
+      return new NaN();
+    }
   }
   
   override public const string toString(){
@@ -115,9 +145,11 @@ public class Multiply : Obj {
       return new Multiply(left.reduce(), right);
     } else if(right.isReducible()){
       return new Multiply(left, right.reduce());
+    } else if(isNumber(left) && isNumber(right)){
+      return new Number(toNumber(left).value * toNumber(right).value);
     } else {
-      return new Number((cast(Number) left).value * (cast(Number) right).value);
-    } 
+      return new NaN();
+    }
   }
   
   override public const string toString(){
@@ -143,9 +175,11 @@ public class Divide : Obj {
       return new Divide(left.reduce(), right);
     } else if(right.isReducible()){
       return new Divide(left, right.reduce());
+    } else if(isNumber(left) && isNumber(right)){
+      return new Number(toNumber(left).value / toNumber(right).value);
     } else {
-      return new Number((cast(Number) left).value / (cast(Number) right).value);
-    } 
+      return new NaN();
+    }
   }
   
   override public const string toString(){
@@ -171,10 +205,10 @@ public class Equals : Obj {
       return new Equals(left.reduce(), right);
     } else if(right.isReducible()){
       return new Equals(left, right.reduce());
-    } else if(cast(Number) left && cast(Number) right){
-      return new Boolean((cast(Number) left).value == (cast(Number) right).value);
-    } else if(cast(Boolean) left && cast(Boolean) right){
-      return new Boolean((cast(Boolean) left).value == (cast(Boolean) right).value);
+    } else if(isNumber(left) && isNumber(right)){
+      return new Boolean(toNumber(left).value == toNumber(right).value);
+    } else if(isBoolean(left) && isBoolean(right)){
+      return new Boolean(toBoolean(left).value == toBoolean(right).value);
     } else {
       return new Boolean(false);
     }
@@ -204,7 +238,7 @@ public class LessThan : Obj {
     } else if(right.isReducible()){
       return new LessThan(left, right.reduce());
     } else {
-      return new Boolean((cast(Number) left).value < (cast(Number) right).value);
+      return new Boolean(toNumber(left).value < toNumber(right).value);
     } 
   }
   
@@ -232,7 +266,7 @@ public class GreaterThan : Obj {
     } else if(right.isReducible()){
       return new GreaterThan(left, right.reduce());
     } else {
-      return new Boolean((cast(Number) left).value > (cast(Number) right).value);
+      return new Boolean(toNumber(left).value > toNumber(right).value);
     } 
   }
   
@@ -260,7 +294,7 @@ public class And : Obj {
     } else if(right.isReducible()){
       return new And(left, right.reduce());
     } else {
-      return new Boolean((cast(Boolean) left).value && (cast(Boolean) right).value);
+      return new Boolean(toBoolean(left).value && toBoolean(right).value);
     } 
   }
   
@@ -288,7 +322,7 @@ public class Or : Obj {
     } else if(right.isReducible()){
       return new Or(left, right.reduce());
     } else {
-      return new Boolean((cast(Boolean) left).value || (cast(Boolean) right).value);
+      return new Boolean(toBoolean(left).value || toBoolean(right).value);
     } 
   }
   
@@ -312,7 +346,7 @@ public class Not : Obj {
     if(cond.isReducible()){
       return new Not(cond.reduce());
     } else {
-      return new Boolean(!(cast(Boolean) cond).value);
+      return new Boolean(!toBoolean(cond).value);
     } 
   }
   
@@ -323,5 +357,6 @@ public class Not : Obj {
   override public const pure bool isReducible(){
     return true;
   }
+
 }
 
