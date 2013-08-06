@@ -15,11 +15,13 @@ class Machine {
   }
 
   public void run() {
+    writefln("> %s", expression);
+
     while(expression.isReducible()){
-      writefln("Step %d: %s", steps, expression);
+      writefln("\t%d) %s", steps, expression);
       step();
     }
-      writefln("Step %d: %s", steps, expression);
+      writefln("Result: %s\n", expression);
   }
 }
 
